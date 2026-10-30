@@ -1,0 +1,7 @@
+numpy==2.5.3
+pandas==3.0.5
+matplotlib==3.11.2
+scikit-learn==1.9.1
+torch==2.14.0
+ipykernel==7.3.0
+nbconvert==7.17.1
