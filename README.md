@@ -1,6 +1,6 @@
 # Sunspots forecasting
 
-Midterm project of Advanced Machine Learning and Deep Learning: forecasting the monthly mean sunspot number with recurrent neural networks.
+Forecasting the monthly mean sunspot number (1749 to 1983) with recurrent neural networks: simple RNN, LSTM and GRU, compared with dense networks, a linear autoregressive model and a persistence baseline.
 
 ## Executed notebooks
 
@@ -20,7 +20,15 @@ The dataset is stored in `data/monthly-sunspots.csv`, so no internet connection 
 
 ## Run order
 
-1. `01_data_preparation.ipynb`: Task 1 and Task 2
-2. `02_one_step.ipynb`: Task 3
-3. `03_multi_step.ipynb`: Task 4
-4. `04_gated_cells.ipynb`: Task 5
+1. `01_data_preparation.ipynb`
+2. `02_one_step.ipynb`
+3. `03_multi_step.ipynb`
+4. `04_gated_cells.ipynb`
+
+## Course context
+
+Developed for the Advanced Machine Learning course. Mapping to the course tasks: 
+- Tasks 1 and 2 in `01_data_preparation.ipynb`
+- Task 3 in `02_one_step.ipynb`
+- Task 4 in `03_multi_step.ipynb`
+- Task 5 in `04_gated_cells.ipynb`
