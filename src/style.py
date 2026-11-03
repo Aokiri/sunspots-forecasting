@@ -2,6 +2,10 @@ from dataclasses import dataclass
 
 import matplotlib.pyplot as plt
 
+# Each entity keeps the same color in every notebook. The gold of SOLAR (index 1)
+# has low contrast on white, so it goes to GRU, drawn last and with thick lines.
+ENTITY_COLORS: dict[str, int] = {"actual": 0, "GRU": 1, "simple RNN": 2, "LSTM": 3, "dense": 4}
+
 
 @dataclass(frozen=True)
 class Palette:
@@ -10,6 +14,9 @@ class Palette:
     ink: str                 # axes, ticks and text
     grid: str
     highlight: str           # shaded spans, such as the zoom area or the test period
+    
+    def color(self, entity: str) -> str:
+        return self.series[ENTITY_COLORS[entity]]
 
 
 # Sun-themed palette. Orange, gold and red alone are too close to tell apart, so purple
