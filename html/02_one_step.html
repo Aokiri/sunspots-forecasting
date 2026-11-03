@@ -8544,6 +8544,7 @@ Name: validation RMSE, dtype: float64</pre>
     <span class="s2">"test RMSE"</span><span class="p">:</span> <span class="n">errors</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">xs</span><span class="p">(</span><span class="s2">"test"</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">"part"</span><span class="p">),</span>
     <span class="c1"># The baselines are deterministic, so their spread over seeds is NaN.</span>
     <span class="s2">"test std over seeds"</span><span class="p">:</span> <span class="n">errors</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">xs</span><span class="p">(</span><span class="s2">"test"</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">"part"</span><span class="p">),</span>
+    <span class="s2">"test sem"</span><span class="p">:</span> <span class="n">errors</span><span class="o">.</span><span class="n">sem</span><span class="p">()</span><span class="o">.</span><span class="n">xs</span><span class="p">(</span><span class="s2">"test"</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">"part"</span><span class="p">),</span>
 <span class="p">})</span>
 <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"validation"</span><span class="p">,</span> <span class="s2">"test"</span><span class="p">):</span>
     <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">part</span><span class="si">}</span><span class="s2"> / persistence"</span><span class="p">]</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">part</span><span class="si">}</span><span class="s2"> RMSE"</span><span class="p">]</span> <span class="o">/</span> <span class="n">results</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"persistence"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">part</span><span class="si">}</span><span class="s2"> RMSE"</span><span class="p">]</span>
@@ -8581,11 +8582,13 @@ Name: validation RMSE, dtype: float64</pre>
 <th>validation RMSE</th>
 <th>test RMSE</th>
 <th>test std over seeds</th>
+<th>test sem</th>
 <th>validation / persistence</th>
 <th>test / persistence</th>
 </tr>
 <tr>
 <th>model</th>
+<th></th>
 <th></th>
 <th></th>
 <th></th>
@@ -8599,6 +8602,7 @@ Name: validation RMSE, dtype: float64</pre>
 <td>15.01</td>
 <td>20.09</td>
 <td>NaN</td>
+<td>NaN</td>
 <td>1.00</td>
 <td>1.00</td>
 </tr>
@@ -8606,6 +8610,7 @@ Name: validation RMSE, dtype: float64</pre>
 <th>linear AR</th>
 <td>13.76</td>
 <td>18.32</td>
+<td>NaN</td>
 <td>NaN</td>
 <td>0.92</td>
 <td>0.91</td>
@@ -8615,6 +8620,7 @@ Name: validation RMSE, dtype: float64</pre>
 <td>13.65</td>
 <td>18.85</td>
 <td>0.48</td>
+<td>0.15</td>
 <td>0.91</td>
 <td>0.94</td>
 </tr>
@@ -8623,6 +8629,7 @@ Name: validation RMSE, dtype: float64</pre>
 <td>13.76</td>
 <td>18.66</td>
 <td>0.44</td>
+<td>0.14</td>
 <td>0.92</td>
 <td>0.93</td>
 </tr>
@@ -8641,8 +8648,8 @@ Name: validation RMSE, dtype: float64</pre>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><strong>Findings:</strong></p>
-<p>On the test period every model beats persistence ($20.09$), but the linear AR model has the lowest error ($18.32$). The dense network follows with $18.66$ and the simple RNN with $18.85$, so the order of validation is reversed: the RNN was the best model there ($13.65$) and is the worst of the three on test.</p>
-<p>The ratios to persistence remove the effect of the more active test period and show the same change. On validation the RNN is at $0.91$, against $0.92$ for the linear AR model; on test it moves to $0.94$ while the linear AR model stays at $0.91$. The networks also become less consistent: the standard deviation over seeds is $0.48$ for the RNN and $0.44$ for the dense network on test, against $0.05$ and $0.08$ on validation (section 5.1).</p>
+<p>On the test period every model beats persistence ($20.09$), but the linear AR model has the lowest error ($18.32$). The two networks are practically tied behind it: $18.66$ for the dense network and $18.85$ for the simple RNN, with sems of $0.14$ and $0.15$. On validation the RNN was the best model ($13.65$), so validation did not anticipate that both networks would fall behind the linear model.</p>
+<p>The networks also become less consistent: the standard deviation over seeds is $0.48$ for the RNN and $0.44$ for the dense network on test, against $0.05$ and $0.08$ on validation (section 5.1).</p>
 <p>One month ahead, neither network learns anything that the linear model does not already capture, and what they learn carries over worse to a period with many more months at high levels than the training data (section 7).</p>
 </div>
 </div>
@@ -8928,7 +8935,7 @@ Persistence has the smallest bias in that row ($10.5$), because it repeats the l
 </ul>
 <p>What the one-step comparison shows:</p>
 <ul>
-<li><p><strong>Test errors:</strong> both networks beat persistence ($20.09$) but not the linear AR model ($18.32$); the dense network reaches $18.66$ and the simple RNN $18.85$. On validation the RNN was the best model, so the order changes between the two peridos (section 6.1).</p>
+<li><p><strong>Test errors:</strong> both networks beat persistence ($20.09$) but not the linear AR model ($18.32$), and they are practically tied with each other ($18.66$ for the dense network and $18.85$ for the simple RNN). On validation the RNN was the best model, so validation did not anticipate this result (section 6.1).</p>
 </li>
 <li><p><strong>Where the error comes from:</strong> all models forecast the high levels too low, and the networks more than the linear model. Above $154.5$ the mean residual is $26.3$ for the simple RNN, $22.2$ for the dense network and $17.5$ for the linear AR model. Only 25 training targets are at those levels, against 65 months in the test period (section 7). The recursive forecasts of the next notebook feed each forecast back as input, so this bias can add up over the 6 months.</p>
 </li>
