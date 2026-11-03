@@ -33,6 +33,20 @@ def predict(model: nn.Module, X: np.ndarray) -> np.ndarray:
         return model(to_tensor(X)).numpy()
     
     
+def predict_recursive(model: nn.Module, X: np.ndarray, horizon: int) -> np.ndarray:
+    # Each one-step forecast becomes  the newest month of the window and the oldest month
+    # is dropped, so the window keeps its length and later steps build on earlier forecasts.
+    model.eval()
+    window = to_tensor(X)
+    steps = []
+    with torch.no_grad():
+        for _ in range(horizon):
+            step = model(window)    # (windows, 1)
+            steps.append(step)
+            window = torch.cat([window[:, 1:, :], step[:, :, None]], dim=1)
+    return torch.cat(steps, dim=1).numpy()
+    
+    
 def fit(model: nn.Module, X_train: np.ndarray, y_train: np.ndarray, X_val: np.ndarray, y_val: np.ndarray) -> History:
     # Shuffling the windows is fine: the time order is kept inside each window.
     loader = DataLoader(TensorDataset(to_tensor(X_train), to_tensor(y_train)), batch_size=BATCH_SIZE, shuffle=True)
