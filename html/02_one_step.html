@@ -8643,7 +8643,7 @@ Name: validation RMSE, dtype: float64</pre>
 <p><strong>Findings:</strong></p>
 <p>On the test period every model beats persistence ($20.09$), but the linear AR model has the lowest error ($18.32$). The dense network follows with $18.66$ and the simple RNN with $18.85$, so the order of validation is reversed: the RNN was the best model there ($13.65$) and is the worst of the three on test.</p>
 <p>The ratios to persistence remove the effect of the more active test period and show the same change. On validation the RNN is at $0.91$, against $0.92$ for the linear AR model; on test it moves to $0.94$ while the linear AR model stays at $0.91$. The networks also become less consistent: the standard deviation over seeds is $0.48$ for the RNN and $0.44$ for the dense network on test, against $0.05$ and $0.08$ on validation (section 5.1).</p>
-<p>One month ahead, neither network learns anything that the linear model does not already capture, and what they learn carries over worse to a period with many more months at high levels than the training data (section 7.1).</p>
+<p>One month ahead, neither network learns anything that the linear model does not already capture, and what they learn carries over worse to a period with many more months at high levels than the training data (section 7).</p>
 </div>
 </div>
 </div>
