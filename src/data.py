@@ -2,6 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.metrics import root_mean_squared_error
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import FunctionTransformer, MinMaxScaler
 
@@ -58,3 +59,8 @@ def to_sunspots(scaler: Pipeline, values: np.ndarray) -> np.ndarray:
     # The scaler works on a single column, so predictions with several steps ahead
     # are flattened, converted back and given their original shape again.
     return scaler.inverse_transform(values.reshape(-1, 1)).reshape(values.shape)
+
+
+def rmse_sunspots(scaler: Pipeline, y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    # The models work in scaled units, but every error is reported in sunspots.
+    return root_mean_squared_error(to_sunspots(scaler, y_true), to_sunspots(scaler, y_pred))
