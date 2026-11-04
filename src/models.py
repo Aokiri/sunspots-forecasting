@@ -1,6 +1,8 @@
 from typing import Literal
 
+import numpy as np
 import torch
+from sklearn.linear_model import LinearRegression
 from torch import nn
 
 RECURRENT_CELLS: dict[str, type[nn.RNNBase]] = {"rnn": nn.RNN, "lstm": nn.LSTM, "gru": nn.GRU}
@@ -40,3 +42,15 @@ class DenseForecaster(nn.Module):
 
 def count_parameters(model: nn.Module) -> int: 
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
+def baseline_forecasts(windows: dict[str, tuple[np.ndarray, np.ndarray]]) -> dict[str, dict[str, np.ndarray]]:
+    # Persistence repeats the last month of each window for every step ahead; the linear AR
+    # model is a linear regression on the window, fitted on train only, with one output per step.
+    X_train, y_train = windows["train"]
+    horizon = y_train.shape[1]
+    linear_ar = LinearRegression().fit(X_train[..., 0], y_train)
+    return {
+        "persistence": {part: np.repeat(X[:, -1, :], horizon, axis=1) for part, (X, _) in windows.items()},
+        "linear AR": {part: linear_ar.predict(X[..., 0]) for part, (X, _) in windows.items()},
+    }
