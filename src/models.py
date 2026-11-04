@@ -8,6 +8,12 @@ from torch import nn
 RECURRENT_CELLS: dict[str, type[nn.RNNBase]] = {"rnn": nn.RNN, "lstm": nn.LSTM, "gru": nn.GRU}
 RNN_HIDDEN: int = 32
 DENSE_HIDDEN: int = 64
+# Chosen on validation in notebook 04, section 5.1.
+LSTM_HIDDEN: int = 16
+GRU_HIDDEN: int = 16
+# Chosen on validation in notebook 04, section 6.2 (direct models with 6 outputs).
+LSTM_DIRECT_HIDDEN: int = 64
+GRU_DIRECT_HIDDEN: int = 16
 
 
 class RecurrentForecaster(nn.Module):
@@ -18,10 +24,13 @@ class RecurrentForecaster(nn.Module):
         # output cannot be squashed by an activation.
         self._head = nn.Linear(hidden, horizon)
         
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x: (batch, window, 1). Only hidden state after the last month is used.
+    def last_hidden(self, x: torch.Tensor) -> torch.Tensor:
+        # Hidden state after the last month of each window, the input of the linear head.
         states, _ = self._recurrent(x)
-        return self._head(states[:, -1, :])
+        return states[:, -1, :]
+        
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self._head(self.last_hidden(x))
         
 
 class DenseForecaster(nn.Module):
